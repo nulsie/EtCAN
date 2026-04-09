@@ -12,7 +12,6 @@
 4. [Installation & Setup](#installation--setup)
 5. [Usage Workflow](#usage-workflow)
 6. [Code Highlights](#code-highlights)
-7. [Disclaimer](#disclaimer)
 
 -----
 
