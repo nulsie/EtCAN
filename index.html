@@ -1,0 +1,354 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EtCAN</title>
+    <style>
+        :root {
+            
+            --bg-color: #e6f0fa;
+            --window-bg: #f4f8fc;
+            --card-bg: #ffffff;
+            --border-color: #b0c4de;
+            --text-main: #0a1b2a;
+            --text-muted: #4a5d73;
+            --accent-blue: #4a90e2; 
+            --btn-top: #fbfdff;
+            --btn-bottom: #e1ebf5;
+            --btn-border: #a1b8d6;
+            --highlight: #4a90e2;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: linear-gradient(to bottom, #f4f8fc 0%, #e6f0fa 100%);
+            background-attachment: fixed;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            color: var(--text-main);
+            font-size: 12px;
+            margin: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .window {
+            background-color: var(--window-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 480px;
+            box-shadow: 0 6px 15px rgba(0, 40, 100, 0.1), 0 1px 3px rgba(0, 40, 100, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .title-bar {
+            background: linear-gradient(to bottom, #eaf2fa 0%, #cce0f5 100%);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--accent-blue);
+            font-weight: bold;
+            padding: 8px 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+        }
+
+        .content {
+            padding: 15px;
+            background-color: var(--window-bg);
+        }
+
+        fieldset {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+        }
+
+        legend {
+            background-color: var(--window-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            color: var(--accent-blue);
+            padding: 2px 8px;
+            font-weight: bold;
+            font-size: 11px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        label {
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            color: var(--text-main);
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="file"], input[type="password"], select {
+            background: #ffffff;
+            border: 1px solid #b0c4de;
+            border-top-color: #9cb4d1; /* subtle inset effect */
+            color: var(--text-main);
+            padding: 6px;
+            width: 95%;
+            margin-bottom: 8px;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            font-size: 12px;
+            border-radius: 3px;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: var(--highlight);
+            background: #f0f6ff; 
+        }
+
+        #sec-key-display {
+            background: #f8fbff;
+            color: var(--text-muted);
+        }
+
+        button, .custom-file-label {
+            background: linear-gradient(to bottom, var(--btn-top) 0%, var(--btn-bottom) 100%);
+            border: 1px solid var(--btn-border);
+            border-radius: 4px;
+            color: var(--text-main);
+            padding: 5px 12px;
+            margin-top: 4px;
+            margin-right: 4px;
+            cursor: pointer;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        button:hover, .custom-file-label:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #d4e4f7 100%);
+            border-color: var(--highlight);
+            color: #000;
+        }
+
+        button:active, .custom-file-label:active {
+            background: #c5d8ed;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            transform: translateY(1px);
+        }
+
+        .status-bar {
+            border-top: 1px solid var(--border-color);
+            padding: 6px 12px;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            min-height: 16px;
+        }
+
+        .divider {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .file-name-display {
+            color: var(--accent-blue);
+            margin-left: 10px;
+            font-size: 11px;
+        }
+        
+        select option {
+            background: #ffffff;
+            color: var(--text-main);
+        }
+        
+        input[type="checkbox"] {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(230, 240, 250, 0.85); 
+    border-top: 1px solid var(--border-color);
+    padding: 4px 15px;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--text-muted);
+    font-size: 10px;
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.credit-wrap strong {
+    color: var(--accent-blue);
+    letter-spacing: 1px;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span>EtCAN</span>
+        </div>
+        <div class="content">
+            <fieldset>
+                <legend>System Configuration</legend>
+                <label for="pinata-jwt-input">Pinata JWT:</label>
+                <input type="password" id="pinata-jwt-input" placeholder=" paste your eyJhbGciOiJIUzI1Ni...">
+                <button onclick="saveConfig()">Lock Configuration</button>
+                <span id="config-status" style="font-size: 10px; margin-left: 10px; color: var(--accent-blue);"></span>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Identity and Account</legend>
+                
+                <div class="divider">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder=" Username...">
+                    
+                    <label for="master-password">Auth Pass:</label>
+                    <input type="password" id="master-password" placeholder=" Master Password...">
+                    
+                    <button onclick="loginUser()">Load ID</button>
+                    <button onclick="registerUser()">Save ID</button>
+                </div>
+
+                <button onclick="initIdentity()">Generate New Keypair</button>
+                
+                <label>Public Link (PUB):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="pub-key-display" readonly value="Offline..." style="flex-grow: 1;">
+                    <button onclick="copyField('pub-key-display')" style="margin-top:0;">Copy</button>
+                </div>
+                
+                <label>Secret Link (SEC):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="sec-key-display" readonly value="Offline..." style="flex-grow: 1;">
+                    <button onclick="copyField('sec-key-display')" style="margin-top:0;">Copy</button>
+                </div>
+            </fieldset>
+            
+            <fieldset id="address-book-fieldset" style="display: none;">
+                <legend>Encrypted Address Book</legend>
+                
+                <div class="divider">
+                    <label for="contact-nick">Nickname:</label>
+                    <input type="text" id="contact-nick" placeholder="e.g. CipherPunk99...">
+                    
+                    <label for="contact-pub">Public Key:</label>
+                    <input type="text" id="contact-pub" placeholder="Paste PUB key...">
+                    
+                    <button onclick="addContact()">Save Contact</button>
+                </div>
+
+                <label for="contact-list">Saved Contacts:</label>
+                <select id="contact-list" onchange="autofillContactKeys(this.value)">
+                    <option value="">-- Load ID to view contacts --</option>
+                </select>
+            </fieldset>
+
+            <fieldset>
+                <legend>Outbound Transfer</legend>
+                <label for="recipient-pub-key">Recipient PUB Key:</label>
+                <input type="text" id="recipient-pub-key" placeholder=" Paste recipient key...">
+                
+                <label for="file-input">Payload:</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="file-input" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : 'No file selected'">
+                    <label for="file-input" class="custom-file-label">Browse...</label>
+                    <span id="file-name" class="file-name-display">No file selected</span>
+                </div>
+                
+                <div class="divider" style="margin-top: 15px;"></div>
+                <label style="font-weight: normal;">
+                    <input type="checkbox" id="use-stego-toggle" onchange="document.getElementById('stego-controls').style.display = this.checked ? 'block' : 'none'">
+                    Enable Steganography
+                </label>
+
+                <div id="stego-controls" style="display: none; margin-top: 10px;">
+                    <label for="carrier-input">Carrier Image (PNG/JPG):</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="carrier-input" accept="image/png, image/jpeg" onchange="document.getElementById('carrier-name').innerText = this.files[0] ? this.files[0].name : 'No image selected'">
+                        <label for="carrier-input" class="custom-file-label">Browse...</label>
+                        <span id="carrier-name" class="file-name-display">No image selected</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                    <button onclick="dropFile()">Transmit File</button>
+                    <input type="text" id="last-cid" readonly placeholder="CID will appear here..." style="margin-bottom:0; flex-grow: 1; display: none;">
+                    <button id="copy-cid-btn" onclick="copyField('last-cid')" style="margin-top:0; display: none;">Copy CID</button>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Data Downlink</legend>
+                <label for="sender-pub-key">Source PUB Key:</label>
+                <input type="text" id="sender-pub-key" placeholder=" Paste sender key...">
+
+                <label for="cid-input">IPFS Hash (CID):</label>
+                <input type="text" id="cid-input" placeholder=" Qm...">
+                
+                <button onclick="pickupFile()">Retrieve Data</button>
+            </fieldset>
+            <fieldset>
+    <legend>Multi-file Site Deployment</legend>
+    <label for="folder-input">Select Site Folder:</label>
+    <div class="file-upload-wrapper">
+        <!-- The 'webkitdirectory' attribute allows folder selection -->
+        <input type="file" id="folder-input" webkitdirectory directory multiple onchange="updateFolderStatus(this)">
+        <label for="folder-input" class="custom-file-label">Choose Folder...</label>
+        <span id="folder-status" class="file-name-display">No folder selected</span>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+        <button onclick="deploySite()">Deploy Full Site</button>
+        <input type="text" id="site-cid-display" readonly placeholder="Site URL..." style="margin-bottom:0; flex-grow: 1; display: none;">
+        <button id="copy-site-btn" onclick="copyField('site-cid-display')" style="margin-top:0; display: none;">Copy</button>
+    </div>
+</fieldset>
+            
+            <div class="status-bar" id="status-bar">Ready.</div>
+        </div>
+        <footer class="app-footer">
+    <div class="footer-content">
+        <div class="credit-wrap">
+            <span class="blink">●</span> 
+            EtCAN v1.1.0 by <strong>nulsie</strong>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl-fast.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl-util@0.15.1/nacl-util.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
