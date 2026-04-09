@@ -1,4 +1,4 @@
-# ️EtCAN (Encrypted Transfer & Covert Access Network)
+# ️EtCAN
 
 **EtCAN** is a client-side, zero-knowledge, encrypted file transfer and steganography utility. It operates entirely within the browser, leveraging **Curve25519** elliptic curve cryptography and the **InterPlanetary File System (IPFS)** to facilitate secure, censorship-resistant data exchange and static site deployment.
 
